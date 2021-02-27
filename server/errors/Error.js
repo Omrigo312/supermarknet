@@ -1,6 +1,5 @@
 class Error {
-  constructor(id, httpCode, message, isShowStackTrace) {
-    this.id = id;
+  constructor(httpCode, message, isShowStackTrace) {
     this.httpCode = httpCode;
     this.message = message;
     this.isShowStackTrace = isShowStackTrace;

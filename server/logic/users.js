@@ -44,7 +44,8 @@ const register = async (newUser) => {
 
 const validateRegistrationData = async (user) => {
   const { id, email, password, city, street, firstName, lastName } = user;
-  if (await usersDao.isUserExists(email)) throw new ServerError(ErrorType.USER_ALREADY_EXISTS);
+  if (await usersDao.isUserExistsByEmail(email)) throw new ServerError(ErrorType.USER_EMAIL_ALREADY_EXISTS);
+  if (await usersDao.isUserExistsById(id)) throw new ServerError(ErrorType.USER_ID_ALREADY_EXISTS);
   if (!validator.isEmail(email)) throw new ServerError(ErrorType.INVALID_EMAIL);
   if (!validator.isLength(password, { min: 6, max: 30 })) throw new ServerError(ErrorType.INVALID_PASSWORD);
   if (!validator.isLength(street, { min: 1, max: 30 })) throw new ServerError(ErrorType.INVALID_ADDRESS);
@@ -55,7 +56,7 @@ const validateRegistrationData = async (user) => {
 };
 
 const isId = (id) => {
-  if (!isNaN(id) || id.toString().length === 9) {
+  if (!isNaN(id) && id.toString().length === 9) {
     return true;
   }
   return false;

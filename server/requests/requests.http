@@ -1,0 +1,24 @@
+# Register
+POST http://localhost:3001/api/users HTTP/1.1
+content-type: application/json
+
+{
+    "id":"197564534",
+    "email": "omrigo312@gmail.com",
+    "password": "123123",
+    "firstName":"Omri",
+    "lastName":"Goldstein",
+    "city":"Tel Aviv",
+    "street":"Ha'avoda"
+}
+###
+
+# Login
+POST http://localhost:3001/api/users/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "omrigo312@gmail.com",
+    "password": "123123"
+}
+###

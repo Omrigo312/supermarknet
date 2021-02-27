@@ -10,7 +10,7 @@ const login = async (user) => {
   try {
     loginResult = await connection.executeWithParameters(sql, parameters);
   } catch (error) {
-    throw new ServerError(ErrorType.GENERAL_ERROR, `Error with user login: ${JSON.stringify(user)}`, error);
+    throw new ServerError(ErrorType.SQL, `Error with user login: ${JSON.stringify(user)}`, error);
   }
 
   // User does not exist or incorrect password
@@ -30,30 +30,40 @@ const register = async (newUser) => {
   try {
     await connection.executeWithParameters(sql, parameters);
   } catch (error) {
-    throw new ServerError(ErrorType.GENERAL_ERROR, `Error with user registration: ${JSON.stringify(newUser)}`, error);
+    throw new ServerError(ErrorType.SQL, `Error with user registration: ${JSON.stringify(newUser)}`, error);
   }
 };
 
-const isUserExists = async (email) => {
+const isUserExistsByEmail = async (email) => {
   const sql = 'SELECT * FROM users WHERE email =?';
   const parameters = [email];
   try {
     const results = await connection.executeWithParameters(sql, parameters);
     return results.length ? true : false;
   } catch (error) {
-    throw new ServerError(ErrorType.GENERAL_ERROR, `Error with checking if user: ${email} exists`, error);
+    throw new ServerError(ErrorType.SQL, `Error with checking if user email: ${email} exists`, error);
+  }
+};
+
+const isUserExistsById = async (id) => {
+  const sql = 'SELECT * FROM users WHERE id =?';
+  const parameters = [id];
+  try {
+    const results = await connection.executeWithParameters(sql, parameters);
+    return results.length ? true : false;
+  } catch (error) {
+    throw new ServerError(ErrorType.SQL, `Error with checking if user id: ${id} exists`, error);
   }
 };
 
 const getUserById = async (userId) => {
-  const sql =
-    'SELECT id, email, first_name as firstName, last_name as lastName, city, street, type, FROM users WHERE id =?';
+  const sql = 'SELECT id, email, first_name as firstName, last_name as lastName, city, street, type, FROM users WHERE id =?';
   const parameters = [userId];
   try {
     const results = await connection.executeWithParameters(sql, parameters);
     return results[0];
   } catch (error) {
-    throw new ServerError(ErrorType.GENERAL_ERROR, `Error with getting user: ${userId}`, error);
+    throw new ServerError(ErrorType.SQL, `Error with getting user: ${userId}`, error);
   }
 };
 
@@ -65,14 +75,15 @@ const isUserAdmin = async (userId) => {
     const user = results[0];
     return user.type === 'ADMIN' ? true : false;
   } catch (error) {
-    throw new ServerError(ErrorType.GENERAL_ERROR, `Error with checking if user (${userId}) is admin`, error);
+    throw new ServerError(ErrorType.SQL, `Error with checking if user (${userId}) is admin`, error);
   }
 };
 
 module.exports = {
   login,
   register,
-  isUserExists,
+  isUserExistsByEmail,
+  isUserExistsById,
   isUserAdmin,
   getUserById,
 };
